@@ -1,0 +1,10 @@
+markdownify
+pandas
+beautifulsoup4
+jupyter
+langchain
+openai
+faiss-cpu
+tiktoken
+streamlit
+sentence-transformers
