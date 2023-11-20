@@ -7,7 +7,7 @@ from utils import create_vectorstore, create_df, create_docs
 def main():
     parser = argparse.ArgumentParser(description='add, modify and delete upstream nodes')
     parser.add_argument('-m', '--embedding_model_id', dest="embedding_model_id",
-                        required=True, type=str, default="BAAI/bge-small-en-v1.5")
+                        required=True, type=str, default="openai_emb")
     parser.add_argument('-k', '--openai_api_key', dest="openai_api_key",
                         required=False, type=str)
     parser.add_argument('-r', '--raw_file', dest="raw_file",
