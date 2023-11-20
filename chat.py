@@ -134,13 +134,13 @@ if prompt := st.chat_input("What is up?"):
         # get responses and using stream to form the chatbot output
         for response in client.chat.completions.create(
                 messages=list(model_messages),
-                model=st.session_state["openai_model"], stream=True,):
+                model=st.session_state["openai_model"], stream=True, ):
             if response.choices[0].delta.content:
                 full_response += response.choices[0].delta.content
             message_placeholder.markdown(full_response + "▌")
         te = time.time()
 
-        post_info.append(f"  \n(runtime = {te-ts:.2f} seconds)")
+        post_info.append(f"  \n(runtime = {te - ts:.2f} seconds)")
         message_placeholder.markdown(full_response + "".join(post_info))
     st.session_state.messages.append(
         {

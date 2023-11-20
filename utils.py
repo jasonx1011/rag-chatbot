@@ -1,8 +1,3 @@
-from typing import Tuple, List
-from langchain.prompts.prompt import PromptTemplate
-from langchain.schema.runnable import RunnableMap
-from langchain.schema import format_document
-from langchain.prompts import ChatPromptTemplate
 from markdownify import markdownify as md
 import pandas as pd
 from bs4 import BeautifulSoup
@@ -12,8 +7,7 @@ import time
 import pickle
 from langchain.vectorstores import FAISS
 import tiktoken
-import openai
-from collections import defaultdict
+
 
 def create_df(raw_file, data_format="markdown"):
     df = pd.read_csv(raw_file)
@@ -28,11 +22,13 @@ def create_df(raw_file, data_format="markdown"):
         pass
     return df
 
+
 def create_docs(content_str, metadata, splitter):
     docs = []  # List holding all the documents
     for chunk in splitter.split_text(content_str):
         docs.append(Document(page_content=chunk, metadata=metadata))
     return docs
+
 
 def create_vectorstore(db_fp, docs, embeddings):
     print(f"create new db & save: {db_fp}...")
@@ -42,12 +38,15 @@ def create_vectorstore(db_fp, docs, embeddings):
     )
     vectorstore.save_local(db_fp)
     te = time.time()
-    print(f"create new db & save: {db_fp}... runtime = {te-ts:.2f} done.")
+    print(f"create new db & save: {db_fp}... runtime = {te - ts:.2f} done.")
     return vectorstore
+
 
 def create_source_knowledge(vec_search_results):
     source_knowledge = "\n".join([x[0].page_content for x in vec_search_results])
     return source_knowledge
+
+
 def load_vectorstore(db_fp, embeddings):
     # print(f"loading {db_fp}...")
     ts = time.time()
@@ -55,6 +54,7 @@ def load_vectorstore(db_fp, embeddings):
     te = time.time()
     # print(f"loading {db_fp}... runtime = {te-ts:.2f} done.")
     return vectorstore
+
 
 def num_tokens_from_string(string: str, model_name: str) -> int:
     """Returns the number of tokens in a text string."""
@@ -65,9 +65,10 @@ def num_tokens_from_string(string: str, model_name: str) -> int:
 
 
 def create_system_promt():
-    sys_promt=f"""You are a useful, friendly and respectful assistant.
+    sys_promt = f"""You are a useful, friendly and respectful assistant.
     """
     return {"role": "system", "content": sys_promt}
+
 
 def augment_prompt(query, source_knowledge):
     # feed into an augmented prompt
@@ -80,6 +81,7 @@ def augment_prompt(query, source_knowledge):
     Query: {query}"""
     return augmented_prompt
 
+
 def create_ref_md(vec_search_results):
     # references = list(set([f"[{x[0].metadata['title']}]({x[0].metadata['link']})" for x in vec_search_results]))
     references = []
@@ -91,6 +93,7 @@ def create_ref_md(vec_search_results):
             references.append(md_str)
     ref_md = "  \n##### References or links: #####" + "".join(['\n* ' + ref for ref in references])
     return ref_md
+
 
 def write_results_pkl(st, testset, chain):
     now = datetime.now()
@@ -108,5 +111,3 @@ def write_results_pkl(st, testset, chain):
         pickle.dump(results, outfile)
     st.markdown(f"writing {pkl_fp}... done.")
     return results
-
-

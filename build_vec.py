@@ -1,11 +1,7 @@
 import argparse
-from markdownify import markdownify as md
-import pandas as pd
 from langchain.text_splitter import RecursiveCharacterTextSplitter, CharacterTextSplitter
 from langchain.embeddings import OpenAIEmbeddings, HuggingFaceEmbeddings
-import time
 from utils import create_vectorstore, create_df, create_docs
-from bs4 import BeautifulSoup
 
 
 def main():
@@ -46,7 +42,8 @@ def main():
     # ref: https://www.geeksforgeeks.org/different-ways-to-iterate-over-rows-in-pandas-dataframe/
     docs = []
     for idx, row in df.iterrows():
-        docs.extend(create_docs(content_str=row['body'], metadata={'link': row['link'], 'title': row['title']}, splitter=splitter))
+        docs.extend(create_docs(content_str=row['body'], metadata={'link': row['link'], 'title': row['title']},
+                                splitter=splitter))
 
     # select embedding model
     if embedding_model_id == "openai_emb":
